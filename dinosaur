@@ -1,0 +1,85 @@
+from movement import moveToPosition, moveToOrigin
+from farming import prepareFarm
+
+
+def dinosaurFarming(size):
+    while True:
+        prepareFarm(size)
+        spawnDinos(size)
+        randomEntitySwap(size)
+        harvestDinosaurs(size)
+
+
+def spawnDinos(size):
+    moveToOrigin()
+
+    if num_items(Items.Egg) < (size * size):
+        amount = (size * size) - num_items(Items.Egg)
+        trade(Items.Egg, amount)
+
+    for y in range(size):
+        for x in range(size):
+            moveToPosition(x, y)
+            use_item(Items.Egg)
+        if y < size - 1:  # next row if not the last row
+            move(South)
+
+
+def harvestDinosaurs(size):
+    visited = set()
+
+    for x in range(size):
+        for y in range(size):
+            if (x, y) not in visited:
+                moveToPosition(x, y)
+                dinoType = measure()
+
+                # get the group of connected dinosaurs of the same type
+                group = getConnected(x, y, dinoType, visited, size)
+
+                if len(group) >= 4:
+                    # harvest the group
+                    for i in range(len(group)):
+                        gx, gy = group[i]
+                        moveToPosition(gx, gy)
+                        harvest()
+
+
+def getConnected(x, y, dino_type, visited, size):
+    stack = [(x, y)]
+    group = []
+
+    while stack:
+        cx, cy = stack.pop()
+        if (cx, cy) in visited:
+            continue
+        visited.add((cx, cy))
+        group.append((cx, cy))
+
+        # North, South, East, West
+        directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+
+        for direction in directions:
+            dx = direction[0]
+            dy = direction[1]
+            nx = (cx + dx) % size  # wrap around horizontally
+            ny = (cy + dy) % size  # wrap around vertically
+
+            moveToPosition(nx, ny)
+            if measure() == dino_type and (nx, ny) not in visited:
+                stack.append((nx, ny))
+
+    return group
+
+
+def randomEntitySwap(size):
+    for x in range(size):
+        for y in range(size):
+            moveToPosition(x, y)
+            dino_type = measure()
+            if dino_type != 0:
+                directions = [North, South, East, West]
+                randomIndex = random() * len(directions)
+                direction = directions[randomIndex]
+                moveToPosition(x, y)
+                swap(direction)
