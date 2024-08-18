@@ -3,6 +3,7 @@
 
 This is all the code I wrote for [The Farmer Was Replaced](https://store.steampowered.com/app/2060160/The_Farmer_Was_Replaced/). It includes functionalities for farming all crops (including special logic for pumpkins, sunflowers and cacti), solving mazes, and the dinosaur shenanigans. The code is modularized into different files, each handling specific tasks within the game.
 
+![The Farmer Was Replaced](https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2060160/capsule_616x353.jpg?t=1704041534)
 
 ## Algorithms used
 
